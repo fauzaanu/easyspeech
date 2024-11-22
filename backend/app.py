@@ -18,19 +18,21 @@ def transcribe_audio():
     if file.filename == '':
         return jsonify({"error": "No selected file"}), 400
 
-    try:
-        # Save the uploaded file to a temporary location
-        file_path = "uploaded_audio.wav"
-        file.save(file_path)
 
-        # Use Whisper to transcribe the audio file
-        result = model.transcribe(file_path)
+    # remove existing file
+    import os
+    if os.path.exists("uploaded_audio.wav"):
+        os.remove("uploaded_audio.wav")
+    # Save the uploaded file to a temporary location
+    file_path = "uploaded_audio.wav"
+    file.save(file_path)
 
-        # Return the transcribed text
-        return jsonify({"text": result["text"]})
+    # Use Whisper to transcribe the audio file
+    result = model.transcribe(file_path)
+    print(result["text"])
 
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    # Return the transcribed text
+    return jsonify({"text": result["text"]})
 
 # Run the Flask app
 if __name__ == '__main__':
